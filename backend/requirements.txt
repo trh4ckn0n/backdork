@@ -1,5 +1,6 @@
 flask
 flask_cors
+httpx
 openai
 bs4
 python-dotenv
