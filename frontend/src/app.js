@@ -29,7 +29,7 @@ export default function DorkHunter() {
     const dorkList = dorks.split("\n").map(d => d.trim()).filter(Boolean);
 
     try {
-      const res = await fetch("http://localhost:5000/api/scrape", {
+      const res = await fetch("https://backdork-b.onrender.com:5000/api/scrape", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
