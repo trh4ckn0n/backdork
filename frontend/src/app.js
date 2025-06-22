@@ -1,12 +1,6 @@
-// DorkHunter Web App – Advanced Offensive Dorking Suite
+// src/app.js
 
 import React, { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Table, TableHeader, TableRow, TableCell, TableBody } from "@/components/ui/table";
-import { Sparkles, Globe, Search, ShieldCheck, Settings2 } from "lucide-react";
 
 export default function DorkHunter() {
   const [dorks, setDorks] = useState("inurl:php?id=\ninurl:view.php?page=");
@@ -19,9 +13,11 @@ export default function DorkHunter() {
   const [resultsPerDork, setResultsPerDork] = useState(10);
 
   const toggleVulnerability = (vuln) => {
-    setVulnerabilities(prev => prev.includes(vuln)
-      ? prev.filter(v => v !== vuln)
-      : [...prev, vuln]);
+    setVulnerabilities(prev =>
+      prev.includes(vuln)
+        ? prev.filter(v => v !== vuln)
+        : [...prev, vuln]
+    );
   };
 
   const runDorking = async () => {
@@ -29,7 +25,7 @@ export default function DorkHunter() {
     const dorkList = dorks.split("\n").map(d => d.trim()).filter(Boolean);
 
     try {
-      const res = await fetch("https://backdork-b.onrender.com:5000/api/scrape", {
+      const res = await fetch("https://backdorkb.onrender.com/api/scrape", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -37,9 +33,10 @@ export default function DorkHunter() {
           country,
           gpt: gptEnabled,
           vulnerabilities,
-          results_per_dork: resultsPerDork
+          results_per_dork: Number(resultsPerDork)
         })
       });
+
       const data = await res.json();
       setResults(data);
     } catch (err) {
@@ -50,102 +47,126 @@ export default function DorkHunter() {
   };
 
   const exportResults = () => {
-    const data = exportFormat === "json" ? JSON.stringify(results, null, 2) : results.map(r => `${r.dork},${r.url},${r.risk},${r.country}`).join("\n");
+    const data = exportFormat === "json"
+      ? JSON.stringify(results, null, 2)
+      : results.map(r => `${r.dork},${r.url},${r.risk},${r.country}`).join("\n");
+
     const blob = new Blob([data], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `dorkhunter_results.${exportFormat === "json" ? "json" : "csv"}`;
+    a.download = `dorkhunter_results.${exportFormat}`;
     a.click();
   };
 
   const vulnOptions = ["SQL Injection", "XSS", "LFI", "RCE", "Directory Traversal"];
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold flex items-center gap-2 text-indigo-600"><Globe /> DorkHunter – Offensive Dorking Suite</h1>
+    <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
+      <h1 style={{ fontSize: "2rem", color: "#6610f2" }}>DorkHunter – Offensive Dorking Suite</h1>
 
-      <Card>
-        <CardContent className="p-4 space-y-4">
-          <label className="font-semibold">Dork Patterns</label>
-          <Textarea rows={6} value={dorks} onChange={(e) => setDorks(e.target.value)} />
+      <div style={{ marginTop: "1rem", border: "1px solid #ccc", padding: "1rem", borderRadius: "10px" }}>
+        <label>Dork Patterns</label>
+        <br />
+        <textarea
+          rows={6}
+          style={{ width: "100%" }}
+          value={dorks}
+          onChange={(e) => setDorks(e.target.value)}
+        />
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <label className="font-semibold">Country TLD</label>
-              <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="e.g., .fr, .ca, .sn" />
-            </div>
-            <div>
-              <label className="font-semibold">GPT Analysis</label>
-              <Button onClick={() => setGptEnabled(!gptEnabled)} variant={gptEnabled ? "default" : "outline"}>
-                {gptEnabled ? "Enabled" : "Disabled"}
-              </Button>
-            </div>
-            <div>
-              <label className="font-semibold">Export Format</label>
-              <select className="w-full p-2 rounded-md border" value={exportFormat} onChange={(e) => setExportFormat(e.target.value)}>
-                <option value="json">JSON</option>
-                <option value="csv">CSV</option>
-              </select>
-            </div>
-            <div>
-              <label className="font-semibold">Results per Dork</label>
-              <Input type="number" min="1" max="50" value={resultsPerDork} onChange={(e) => setResultsPerDork(e.target.value)} />
-            </div>
-          </div>
-
+        <div style={{ marginTop: "1rem", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1rem" }}>
           <div>
-            <label className="font-semibold">Vulnerabilities Filter (GPT)</label>
-            <div className="flex flex-wrap gap-2">
-              {vulnOptions.map(v => (
-                <Button
-                  key={v}
-                  variant={vulnerabilities.includes(v) ? "default" : "outline"}
-                  onClick={() => toggleVulnerability(v)}
-                >
-                  {v}
-                </Button>
-              ))}
-            </div>
+            <label>Country TLD</label>
+            <input
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              placeholder=".fr, .ca, etc."
+              style={{ width: "100%" }}
+            />
           </div>
+          <div>
+            <label>GPT Analysis</label>
+            <button onClick={() => setGptEnabled(!gptEnabled)}>
+              {gptEnabled ? "Enabled ✅" : "Disabled ❌"}
+            </button>
+          </div>
+          <div>
+            <label>Export Format</label>
+            <select
+              value={exportFormat}
+              onChange={(e) => setExportFormat(e.target.value)}
+              style={{ width: "100%" }}
+            >
+              <option value="json">JSON</option>
+              <option value="csv">CSV</option>
+            </select>
+          </div>
+          <div>
+            <label>Results per Dork</label>
+            <input
+              type="number"
+              value={resultsPerDork}
+              min="1"
+              max="50"
+              onChange={(e) => setResultsPerDork(e.target.value)}
+              style={{ width: "100%" }}
+            />
+          </div>
+        </div>
 
-          <Button onClick={runDorking} disabled={loading} className="w-full mt-4">
-            <Search className="mr-2" /> {loading ? "Scanning..." : "Run Dorking"}
-          </Button>
-        </CardContent>
-      </Card>
+        <div style={{ marginTop: "1rem" }}>
+          <label>Vulnerability Filters</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+            {vulnOptions.map(v => (
+              <button
+                key={v}
+                onClick={() => toggleVulnerability(v)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  border: vulnerabilities.includes(v) ? "2px solid #6610f2" : "1px solid gray",
+                  backgroundColor: vulnerabilities.includes(v) ? "#f0f0ff" : "#fff"
+                }}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <Card>
-        <CardContent className="p-4">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><ShieldCheck /> Results</h2>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableCell>Dork</TableCell>
-                <TableCell>URL</TableCell>
-                <TableCell>Risk</TableCell>
-                <TableCell>Country</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {results.map((res, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>{res.dork}</TableCell>
-                  <TableCell><a href={res.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">{res.url}</a></TableCell>
-                  <TableCell>{res.risk}</TableCell>
-                  <TableCell>{res.country}</TableCell>
-                </TableRow>
+        <button onClick={runDorking} disabled={loading} style={{ marginTop: "1rem", width: "100%", padding: "1rem" }}>
+          {loading ? "Scanning..." : "Run Dorking"}
+        </button>
+      </div>
+
+      {results.length > 0 && (
+        <div style={{ marginTop: "2rem" }}>
+          <h2>Results</h2>
+          <table border="1" cellPadding="8" style={{ width: "100%", marginTop: "1rem" }}>
+            <thead>
+              <tr>
+                <th>Dork</th>
+                <th>URL</th>
+                <th>Risk</th>
+                <th>Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((res, i) => (
+                <tr key={i}>
+                  <td>{res.dork}</td>
+                  <td><a href={res.url} target="_blank" rel="noreferrer">{res.url}</a></td>
+                  <td>{res.risk}</td>
+                  <td>{res.country}</td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
-          {results.length > 0 && (
-            <div className="mt-4 text-right">
-              <Button onClick={exportResults} variant="outline" className="gap-2">
-                <Settings2 size={18} /> Export ({exportFormat.toUpperCase()})
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </tbody>
+          </table>
+          <button onClick={exportResults} style={{ marginTop: "1rem" }}>
+            Export {exportFormat.toUpperCase()}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
