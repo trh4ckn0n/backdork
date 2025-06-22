@@ -3,30 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",                     // ou react-scripts start si CRA
-    "build": "vite build",             // ou react-scripts build
-    "preview": "vite preview"          // si vite
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "lucide-react": "^0.268.0",        // icônes que tu utilises
-    "@radix-ui/react-*": "^1.0.0",     // dépendances des composants UI (à ajuster)
-    // Ici tu as des composants UI importés depuis "@/components/ui/..." 
-    // tu dois soit avoir un alias dans vite.config.js ou webpack.config.js pour '@' 
-    // soit remplacer par les vrais chemins relatifs
+    "lucide-react": "^0.268.0"
   },
   "devDependencies": {
     "vite": "^4.0.0",
     "@vitejs/plugin-react": "^3.0.0",
     "eslint": "^8.0.0",
     "eslint-plugin-react": "^7.0.0"
-  },
-  "vite": {
-    "resolve": {
-      "alias": {
-        "@": "/src"                    // alias pour @ vers src
-      }
-    }
   }
 }
