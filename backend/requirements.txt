@@ -1,3 +1,4 @@
 flask
 openai
 bs4
+python-dotenv
