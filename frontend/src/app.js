@@ -62,7 +62,7 @@ export default function DorkHunter() {
 
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ fontSize: "2rem", color: "#6610f2" }}>DorkHunter – Offensive Dorking Suite</h1>
+      <h1 style={{ fontSize: "2rem", color: "#6610f2" }}>DorkHunter - Offensive Dorking Suite</h1>
 
       <div style={{ marginTop: "1rem", border: "1px solid #ccc", padding: "1rem", borderRadius: "10px" }}>
         <label>Dork Patterns</label>
