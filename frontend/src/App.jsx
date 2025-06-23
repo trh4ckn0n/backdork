@@ -25,7 +25,7 @@ export default function DorkHunter() {
     const dorkList = dorks.split("\n").map(d => d.trim()).filter(Boolean);
 
     try {
-      const res = await fetch("https://backdorkb.onrender.com/api/scrape", {
+      const res = await fetch("https://backdork-b.onrender.com/api/scrape", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
