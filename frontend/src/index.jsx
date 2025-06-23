@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import DorkHunter from './app';
+import DorkHunter from './App.jsx';
 import './index.css'; // optionnel, si tu veux des styles globaux
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
